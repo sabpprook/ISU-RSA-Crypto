@@ -30,6 +30,7 @@ namespace ISU_RSA_Crypto
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (sender, e) =>
                 {
+                    DateTime time = DateTime.Now;
                     byte[] Key = RSA.Encrypt(AES.Key);
 
                     FileStream src = new FileStream(fileName, FileMode.Open, FileAccess.Read);
@@ -49,6 +50,7 @@ namespace ISU_RSA_Crypto
                     cfs.Close();
                     dst.Close();
                     src.Close();
+                    e.Result = (DateTime.Now - time).TotalMilliseconds.ToString();
                 };
             worker.ProgressChanged += (sender, e) =>
                 {
@@ -57,6 +59,7 @@ namespace ISU_RSA_Crypto
             worker.RunWorkerCompleted += (sender, e) =>
                 {
                     ProgBar.Value = 100;
+                    MessageBox.Show("加密完成\n\n歷時: " + e.Result + " ms", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 };
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
@@ -68,6 +71,7 @@ namespace ISU_RSA_Crypto
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (sender, e) =>
             {
+                DateTime time = DateTime.Now;
                 FileStream src = new FileStream(fileName, FileMode.Open, FileAccess.Read);
 
                 src.Seek(8, SeekOrigin.Current);
@@ -87,6 +91,7 @@ namespace ISU_RSA_Crypto
                 cfs.Close();
                 dst.Close();
                 src.Close();
+                e.Result = (DateTime.Now - time).TotalMilliseconds.ToString();
             };
             worker.ProgressChanged += (sender, e) =>
             {
@@ -95,6 +100,7 @@ namespace ISU_RSA_Crypto
             worker.RunWorkerCompleted += (sender, e) =>
             {
                 ProgBar.Value = 100;
+                MessageBox.Show("解密完成\n\n歷時: " + e.Result + " ms", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             };
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
